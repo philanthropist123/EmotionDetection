@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from .emotion_detection import emotion_detector
+from EmotionDetection.emotion_detection import emotion_detector
 import json
 
 app = Flask(__name__, template_folder='oaqjp-final-project-emb-ai/templates', static_folder='oaqjp-final-project-emb-ai/static')
@@ -8,10 +8,15 @@ app = Flask(__name__, template_folder='oaqjp-final-project-emb-ai/templates', st
 def index():
     return render_template('index.html')
 
-@app.route('/emotionDetector', methods=['POST'])
+@app.route('/emotionDetector', methods=['POST', 'GET'])
 def emotionDetector():
+    text_to_analyze = ""
     if request.method == 'POST':
         text_to_analyze = request.form['text']
+    elif request.method == 'GET':
+        text_to_analyze = request.args.get('textToAnalyze')
+
+    if text_to_analyze:
         emotion_result = emotion_detector(text_to_analyze)
 
         if 'error' in emotion_result:
